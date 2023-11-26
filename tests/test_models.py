@@ -140,7 +140,7 @@ class TestProductModel(unittest.TestCase):
         for product in products:
             product.create()
         name = products[0].name
-        count = len(product for product in products if product.name == name)
+        count = len([product for product in products if product.name == name])
         found = Product.find_by_name(name)
         self.assertEqual(found.count(), count)
         for product in found:
@@ -164,7 +164,7 @@ class TestProductModel(unittest.TestCase):
         for product in products:
             product.create()
         category = products[0].category
-        count = len(product for product in products if product.category == category)
+        count = len([product for product in products if product.category == category])
         found = Product.find_by_category(category)
         self.assertEqual(count, found.count())
         for product in found:

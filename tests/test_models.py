@@ -152,7 +152,7 @@ class TestProductModel(unittest.TestCase):
         for product in products:
             product.create()
         availability = products[0].available
-        count = len(product for product in products if product.available == availability)
+        count = len([product for product in products if product.available == availability])
         found = Product.find_by_availability(availability)
         self.assertEqual(found.count(), count)
         for product in found:

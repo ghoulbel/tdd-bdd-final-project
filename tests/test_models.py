@@ -105,32 +105,53 @@ class TestProductModel(unittest.TestCase):
     # ADD YOUR TEST CASES HERE
     #
     def test_read_a_product(self):
-        """It should Read a Product"""
         product = ProductFactory()
         product.id = None
         product.create()
         self.assertIsNotNone(product.id)
         found_product = Product.find(product.id)
-        self.assertEqual(product.id, found_product.id)
-        self.assertEqual(product.description, found_product.description)
-        self.assertEqual(product.name, found_product.name)
-        self.assertEqual(product.price, found_product.price)
+        self.assertEqual(found_product.id, product.id)
+        self.assertEqual(found_product.name, product.name)
+        self.assertEqual(found_product.description, product.description)
+        self.assertEqual(found_product.price, product.price)
+
+    def test_update_a_product(self):
+        """It should Update a Product"""
+        product = ProductFactory()
+        product.id = None
+        product.create()
+        self.assertIsNotNone(product.id)
+        # Change it an save it
+        product.description = "testing"
+        original_id = product.id
+        product.update()
+        self.assertEqual(product.id, original_id)
+        self.assertEqual(product.description, "testing")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        self.assertEqual(products[0].id, original_id)
+        self.assertEqual(products[0].description, "testing")
 
     def test_delete_a_product(self):
         """It should Delete a Product"""
         product = ProductFactory()
         product.create()
         self.assertEqual(len(Product.all()), 1)
+        # delete the product and make sure it isn't in the database
         product.delete()
-        self.assertEqual(len(Product.all()), 0)
+        self.assertEqual(len(Product.all()), 0)    
 
     def test_list_all_products(self):
         """It should List all Products in the database"""
         products = Product.all()
-        self.assertEqual(len(Product.all()), 1)
-        for i in range(5):
+        self.assertEqual(products, [])
+        # Create 5 Products
+        for _ in range(5):
             product = ProductFactory()
-            product.crate()
+            product.create()
+        # See if we get back 5 products
         products = Product.all()
         self.assertEqual(len(products), 5)
 
@@ -144,19 +165,19 @@ class TestProductModel(unittest.TestCase):
         found = Product.find_by_name(name)
         self.assertEqual(found.count(), count)
         for product in found:
-            self.assertEqual(name, product.name)
+            self.assertEqual(product.name, name)   
 
     def test_find_by_availability(self):
         """It should Find Products by Availability"""
         products = ProductFactory.create_batch(10)
         for product in products:
             product.create()
-        availability = products[0].available
-        count = len([product for product in products if product.available == availability])
-        found = Product.find_by_availability(availability)
+        available = products[0].available
+        count = len([product for product in products if product.available == available])
+        found = Product.find_by_availability(available)
         self.assertEqual(found.count(), count)
         for product in found:
-            self.assertEqual(product.available, availability)
+            self.assertEqual(product.available, available)            
 
     def test_find_by_category(self):
         """It should Find Products by Category"""
@@ -166,6 +187,6 @@ class TestProductModel(unittest.TestCase):
         category = products[0].category
         count = len([product for product in products if product.category == category])
         found = Product.find_by_category(category)
-        self.assertEqual(count, found.count())
+        self.assertEqual(found.count(), count)
         for product in found:
-            self.assertEqual(category, product.category)
+            self.assertEqual(product.category, category)            

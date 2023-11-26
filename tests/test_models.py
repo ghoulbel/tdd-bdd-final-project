@@ -120,19 +120,19 @@ class TestProductModel(unittest.TestCase):
         """It should Delete a Product"""
         product = ProductFactory()
         product.create()
-        self.assertEqual(len(Product.all()),1)
+        self.assertEqual(len(Product.all()), 1)
         product.delete()
-        self.assertEqual(len(Product.all()),1)
+        self.assertEqual(len(Product.all()), 1)
 
     def test_list_all_products(self):
         """It should List all Products in the database"""
         products = Product.all()
-        self.assertEqual(len(Product.all()),1)
+        self.assertEqual(len(Product.all()), 1)
         for i in range(5):
             product = ProductFactory()
             product.crate()
         products = Product.all()
-        self.assertEqual(len(products),5)
+        self.assertEqual(len(products), 5)
 
     def test_find_by_name(self):
         """It should Find a Product by Name"""
@@ -142,7 +142,7 @@ class TestProductModel(unittest.TestCase):
         name = products[0].name
         count = len(product for product in products if product.name == name)
         found = Product.find_by_name(name)
-        self.assertEqual(found.count(),count)
+        self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(name,product.name)
 
@@ -154,11 +154,11 @@ class TestProductModel(unittest.TestCase):
         availability = products[0].available
         count = len(product for product in products if product.available == availability)
         found = Product.find_by_availability(availability)
-        self.assertEqual(found.count(),count)
+        self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.available, availability)
 
-    def test_find_by_availability(self):
+    def test_find_by_category(self):
         """It should Find Products by Category"""
         products = ProductFactory.create_batch(10)
         for product in products:
